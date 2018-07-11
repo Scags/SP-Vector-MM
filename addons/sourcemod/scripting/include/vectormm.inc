@@ -117,6 +117,13 @@ methodmap Vector < DataPack
 		array[2] = this.z;
 	}
 
+	public void CopyFromArray( float array[3] )
+	{
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+	}
+
 	public void Zero()
 	{
 		this.Reset(true);
@@ -215,10 +222,7 @@ methodmap Vector < DataPack
 	public void Angles( float angle[3] )
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
-
+		this.CopyToArray(v);
 		GetVectorAngles(v, angle);
 	}
 
@@ -389,5 +393,5 @@ stock Vector operator/(Vector oper1, Vector oper2)
 // Does this even work?
 stock bool IsFinite( float f )
 {
-	return ((view_as< Address >(f) & 0x7F800000) != 0x7F800000);
+	return ((view_as< Address >(f) & view_as< Address >(0x7F800000)) != view_as< Address >(0x7F800000));
 }
