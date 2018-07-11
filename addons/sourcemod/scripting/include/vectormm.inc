@@ -112,9 +112,9 @@ methodmap Vector < DataPack
 
 	public void CopyToArray( float array[3] )
 	{
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
+		array[0] = this.x;
+		array[1] = this.y;
+		array[2] = this.z;
 	}
 
 	public void Zero()
@@ -133,9 +133,7 @@ methodmap Vector < DataPack
 	public float Length()
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
+		this.CopyToArray(v);
 		return GetVectorLength(v);
 	}
 	public float LengthSqr()
@@ -143,24 +141,20 @@ methodmap Vector < DataPack
 		return (this.x * this.x + this.y * this.y + this.z * this.z);
 	}
 
-	public float DistTo( const Vector vOther, bool squared = false )
+	public float DistTo( const Vector vOther )
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
+		this.CopyToArray(v)
 
 		float v2[3];
-		v2[0] = vOther.x;
-		v2[1] = vOther.y;
-		v2[2] = vOther.z;
+		vOther.CopyToArray(v2);
 
-		return GetVectorDistance(v, v2, squared);
+		return GetVectorDistance(v, v2);
 	}
 
 	public float DistToSqr(const Vector vOther)
 	{
-		Vector delta = new Vector(this.x - vOther.x, this.y = vOther.y, this.z - vOther.z);
+		Vector delta = new Vector(this.x - vOther.x, this.y - vOther.y, this.z - vOther.z);
 		float length = delta.LengthSqr();
 		delete delta;
 		return length;
@@ -176,14 +170,9 @@ methodmap Vector < DataPack
 	public float Dot( const Vector vOther )
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
-
+		this.CopyToArray(v);
 		float v2[3];
-		v2[0] = vOther.x;
-		v2[1] = vOther.y;
-		v2[2] = vOther.z;
+		vOther.CopyToArray(v2);
 
 		return GetVectorDotProduct(v, v2);
 	}
@@ -191,14 +180,9 @@ methodmap Vector < DataPack
 	public Vector Cross( const Vector vOther )
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
-
+		this.CopyToArray(v);
 		float v2[3];
-		v2[0] = vOther.x;
-		v2[1] = vOther.y;
-		v2[2] = vOther.z;
+		vOther.CopyToArray(v2);
 
 		GetVectorCrossProduct(v, v2, v2);
 		return new Vector(v2[0], v2[1], v2[2]);
@@ -207,10 +191,7 @@ methodmap Vector < DataPack
 	public float NormalizeInPlace()
 	{
 		float v[3];
-		v[0] = this.x;
-		v[1] = this.y;
-		v[2] = this.z;
-
+		this.CopyToArray(v);
 		float dist = NormalizeVector(v, v);
 
 		this.x = v[0];
