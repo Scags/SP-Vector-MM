@@ -160,14 +160,9 @@ methodmap Vector < DataPack
 
 	public float DistToSqr(const Vector vOther)
 	{
-		Vector delta;
-
-		delta.x = this.x - vOther.x;
-		delta.y = this.y - vOther.y;
-		delta.z = this.z - vOther.z;
+		Vector delta = new Vector(this.x - vOther.x, this.y = vOther.y, this.z - vOther.z);
 		float length = delta.LengthSqr();
 		delete delta;
-
 		return length;
 	}
 
@@ -224,9 +219,14 @@ methodmap Vector < DataPack
 		return dist;
 	}
 
+	public Vector Clone()
+	{
+		return new Vector(this.x, this.y, this.z);
+	}
+
 	public Vector Normalized()
 	{
-		Vector vector = this;
+		Vector vector = this.Clone();
 		vector.NormalizeInPlace();
 		return vector;
 	}
@@ -272,11 +272,6 @@ methodmap Vector < DataPack
 		return new Vector(this.x > vOther.x ? this.x : vOther.x, 
 		this.y > vOther.y ? this.y : vOther.y, 
 		this.z > vOther.z ? this.z : vOther.z);
-	}
-
-	public Vector Clone()
-	{
-		return new Vector(this.x, this.y, this.z);
 	}
 
 	public void Copy( Vector dst )
