@@ -1,38 +1,179 @@
-//#if defined _vector_included
-//  #endinput
-//#endif
-//#define _vector_included
+#if defined _vectormm_included
+  #endinput
+#endif
+#define _vectormm_included
 
 #define RAND_MAX 		32767	// Tyvm cstdlib
 #define VALVE_RAND_MAX 	0x7FFF
 #define VEC_T_NAN 		view_as< float >(0x7FC00000)
 
-methodmap Vector < DataPack
+// One day this will work
+/*enum struct Vector
+{
+	float x;
+	float y;
+	float z;
+
+	void Init(float X = 0.0, float Y = 0.0, float Z = 0.0)
+	{
+		this.x = X;
+		this.y = Y;
+		this.z = Z;
+	}
+
+	void Zero()
+	{
+		this.x = this.y = this.z = 0.0;
+	}
+
+	float Length()
+	{
+		return GetVectorLength(view_as< float >(this));	// Fuck lol
+	}
+
+	float LengthSqr()
+	{
+		return GetVectorLength(view_as< float >(this), true);
+	}
+
+	bool IsZero(float tolerance = 0.01)
+	{
+		return (-tolerance < this.x < tolerance && -tolerance < this.y < tolerance && -tolerance < this.z < tolerance);
+	}
+
+	float NormalizeInPlace()
+	{
+		return NormalizeVector(view_as< float >(this), view_as< float >(this));
+	}
+
+	bool IsLengthGreaterThan( float val )
+	{
+		return this.LengthSqr() > val * val;
+	}
+
+	bool IsLengthLessThan( float val )
+	{
+		return this.LengthSqr() < val * val;
+	}
+
+	float DistTo(const Vector vOther)
+	{
+		return GetVectorDistance(view_as< float >(this), view_as< float >(vOther));
+	}
+
+	float DistToSqr(const Vector vOther)
+	{
+		Vector delta;
+		delta.x = this.x - vOther.x;
+		delta.y = this.y - vOther.y;
+		delta.z = this.z - vOther.z;
+		return delta.LengthSqr();
+	}
+
+	void CopyToArray(float array[3])
+	{
+		array[0] = this.x;
+		array[1] = this.y;
+		array[2] = this.z;
+	}
+
+	void CopyFromArray(float array[3])
+	{
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+	}
+
+	void MulAdd(const Vector a, const Vector b, float scalar)
+	{
+		this.x = a.x + b.x * scalar;
+		this.y = a.y + b.y * scalar;
+		this.z = a.z + b.z * scalar;
+	}
+
+	float Dot(const Vector vOther)
+	{
+		return GetVectorDotProduct(view_as< float >(this), view_as< float >(vOther));
+	}
+
+	Vector Cross(const Vector vOther)
+	{
+		Vector v;
+		GetVectorCrossProduct(view_as< float >(this), view_as< float >(vOther), view_as< float >(v));
+		return v;
+	}
+
+	 bool WithinAABox( const Vector boxmin, const Vector boxmax )
+	{
+		return ( 
+			( boxmin.x <= this.x <= boxmax.x) &&
+			( boxmin.y <= this.y <= boxmax.y) &&
+			( boxmin.z <= this.z <= boxmax.z)
+		);
+	}
+
+	Vector Min( const Vector vOther )
+	{
+		Vector v;
+		v.Init(this.x < vOther.x ? this.x : vOther.x, 
+		this.y < vOther.y ? this.y : vOther.y, 
+		this.z < vOther.z ? this.z : vOther.z);
+		return v;
+	}
+
+	Vector Max( const Vector vOther )
+	{
+		Vector v;
+		v.Init(this.x > vOther.x ? this.x : vOther.x, 
+		this.y > vOther.y ? this.y : vOther.y, 
+		this.z > vOther.z ? this.z : vOther.z);
+		return v;
+	}
+
+	void Copy( Vector dst )
+	{
+		dst.x = this.x;
+		dst.y = this.y;
+		dst.z = this.z;
+	}
+
+	bool IsValid()
+	{
+		return IsFinite(this.x) && IsFinite(this.y) && IsFinite(this.z);
+	}
+
+	void InValidate()
+	{
+		this.x = this.y = this.z = VEC_T_NAN;
+	}
+}*/
+
+methodmap Vector < ArrayList
 {
 	public Vector( float x = 0.0, float y = 0.0, float z = 0.0 )
 	{
-		DataPack pack = new DataPack();
-		pack.WriteFloat(x);
-		pack.WriteFloat(y);
-		pack.WriteFloat(z);
-		return view_as< Vector >(pack);
+		ArrayList v = new ArrayList();
+		v.Push(x);
+		v.Push(y);
+		v.Push(z);
+		return view_as< Vector >(v);
 	}
 
 	public static Vector AsRandom( float minVal, float maxVal )
 	{
-		DataPack pack = new DataPack();
-		pack.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
-		pack.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
-		pack.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
-		return view_as< Vector >(pack);
+		ArrayList v = new ArrayList();
+		v.Push(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		v.Push(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		v.Push(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		return view_as< Vector >(v);
 	}
 
 	public static Vector AsVector2D( float x = 0.0, float y = 0.0 )	// Idk why you'd want this, but here
 	{
-		DataPack pack = new DataPack();
-		pack.WriteFloat(x);
-		pack.WriteFloat(y);
-		return view_as< Vector >(pack);
+		ArrayList v = new ArrayList();
+		v.Push(x);
+		v.Push(y);
+		return view_as< Vector >(v);
 	}
 
 	public static Vector FromAngles( float fwd[3], float right[3], float up[3] )
@@ -46,13 +187,11 @@ methodmap Vector < DataPack
 	{
 		public get()
 		{
-			this.Reset();
-			return this.ReadFloat();
+			return this.Get(0);
 		}
 		public set( const float i )
 		{
-			this.Reset();
-			this.WriteFloat(i);
+			this.Set(0, i);
 		}
 	}
 
@@ -60,15 +199,11 @@ methodmap Vector < DataPack
 	{
 		public get()
 		{
-			this.Reset();
-			this.ReadFloat();
-			return this.ReadFloat();
+			return this.Get(1);
 		}
 		public set( const float i )
 		{
-			this.Reset();
-			this.ReadFloat();
-			this.WriteFloat(i);
+			this.Set(1, i);
 		}
 	}
 
@@ -76,31 +211,24 @@ methodmap Vector < DataPack
 	{
 		public get()
 		{
-			this.Reset();
-			this.ReadFloat();
-			this.ReadFloat();
-			return this.ReadFloat();
+			return this.Get(2);
 		}
 		public set( const float i )
 		{
-			this.Reset();
-			this.ReadFloat();
-			this.ReadFloat();	// .-.
-			this.WriteFloat(i);
+			this.Set(2, i);
 		}
 	}
 
 	public void Random( float minVal, float maxVal )
 	{
-		this.Reset(true);
-		this.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
-		this.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
-		this.WriteFloat(minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		this.Set(0, minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		this.Set(1, minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
+		this.Set(2, minVal + ((GetRandomFloat(0.0, float(RAND_MAX)) / VALVE_RAND_MAX)) * (maxVal - minVal));
 	}
 
 	public bool IsZero( float tolerance = 0.01 )
 	{
-		return (this.x > -tolerance && this.x < tolerance && this.y > -tolerance && this.y < tolerance && this.z > -tolerance && this.z < tolerance);
+		return (-tolerance < this.x < tolerance && -tolerance < this.y < tolerance && -tolerance < this.z < tolerance);
 	}
 
 	public void Negate()
@@ -126,10 +254,7 @@ methodmap Vector < DataPack
 
 	public void Zero()
 	{
-		this.Reset(true);
-		this.WriteFloat(0.0);
-		this.WriteFloat(0.0);
-		this.WriteFloat(0.0);
+		this.x = this.y = this.z = 0.0;
 	}
 
 	public void Clear()
@@ -139,10 +264,9 @@ methodmap Vector < DataPack
 
 	public float Length()
 	{
-		float v[3];
-		this.CopyToArray(v);
-		return GetVectorLength(v);
+		return SquareRoot(this.x * this.x + this.y * this.y + this.z * this.z);
 	}
+
 	public float LengthSqr()
 	{
 		return (this.x * this.x + this.y * this.y + this.z * this.z);
@@ -150,13 +274,10 @@ methodmap Vector < DataPack
 
 	public float DistTo( const Vector vOther )
 	{
-		float v[3];
-		this.CopyToArray(v)
-
-		float v2[3];
-		vOther.CopyToArray(v2);
-
-		return GetVectorDistance(v, v2);
+		Vector delta = new Vector(this.x - vOther.x, this.y - vOther.y, this.z - vOther.z);
+		float length = delta.Length();
+		delete delta;
+		return length;
 	}
 
 	public float DistToSqr(const Vector vOther)
@@ -200,10 +321,7 @@ methodmap Vector < DataPack
 		float v[3];
 		this.CopyToArray(v);
 		float dist = NormalizeVector(v, v);
-
-		this.x = v[0];
-		this.y = v[1];
-		this.z = v[2];
+		this.CopyFromArray(v);
 		return dist;
 	}
 
@@ -239,9 +357,9 @@ methodmap Vector < DataPack
 	public bool WithinAABox( const Vector boxmin, const Vector boxmax )
 	{
 		return ( 
-			( this.x >= boxmin.x ) && ( this.x <= boxmax.x) &&
-			( this.y >= boxmin.y ) && ( this.y <= boxmax.y) &&
-			( this.z >= boxmin.z ) && ( this.z <= boxmax.z)
+			( boxmin.x <= this.x <= boxmax.x) &&
+			( boxmin.y <= this.y <= boxmax.y) &&
+			( boxmin.z <= this.z <= boxmax.z)
 		);
 	}
 
@@ -291,8 +409,6 @@ stock bool operator!=(Vector oper1, Vector oper2)
 	return (oper1.x != oper2.x) || (oper1.y != oper2.y) || (oper1.z != oper2.z);
 }
 
-// :c
-
 stock void operator++(Vector oper)
 {
 	oper.x++;
@@ -307,9 +423,7 @@ stock void operator--(Vector oper)
 	oper.z--;
 }
 
-
-// WARNING, DO NOT USE THESE OPERATORS UNLESS YOU KNOW WHAT YOU ARE DOING. 
-// DO NOT EVER USE A '+=', '-=', '*=', OR '/=' OPERATOR. YOU ARE NOT DEALLOCATING MEMORY BEFOREHAND.
+// For the love of God please don't use +=, -= or anything of the like
 
 stock Vector operator-(Vector oper1)
 {
